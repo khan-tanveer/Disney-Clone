@@ -1,19 +1,42 @@
 import React from "react";
 import { FaBars } from "react-icons/fa";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import {
+  selectUserName,
+  selectUserPhoto,
+  setUserLoginDetails,
+} from "../features/user/userSlice";
 import { auth, provider } from "./firebase";
 
 const Header = ({ toggle }) => {
+  const dispatch = useDispatch;
+  const history = useHistory;
+  const username = useSelector(selectUserName);
+  const userphoto = useSelector(selectUserPhoto);
+
   const handleAuth = () => {
     auth
       .signInWithPopup(provider)
       .then((result) => {
+        setUser(result.user);
         console.log(result);
       })
       .catch((error) => {
         alert(error.message);
       });
+  };
+
+  const setUser = (user) => {
+    dispatch(
+      setUserLoginDetails({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoUrl,
+      })
+    );
   };
 
   return (
@@ -24,6 +47,8 @@ const Header = ({ toggle }) => {
             <img src="/images/logo.svg" alt="" />
           </Logo>
         </NavLink>
+
+        {!username ? <Login onClick={handleAuth}>Login</Login> : <></>}
 
         <MobileIcon onClick={toggle}>
           <FaBars />
