@@ -15,14 +15,14 @@ const Header = ({ toggle }) => {
   const dispatch = useDispatch;
   const history = useHistory;
   const username = useSelector(selectUserName);
-  const userphoto = useSelector(selectUserPhoto);
+  const userPhoto = useSelector(selectUserPhoto);
 
   const handleAuth = () => {
     auth
       .signInWithPopup(provider)
       .then((result) => {
         setUser(result.user);
-        console.log(result);
+        // console.log(result);
       })
       .catch((error) => {
         alert(error.message);
@@ -34,7 +34,7 @@ const Header = ({ toggle }) => {
       setUserLoginDetails({
         name: user.displayName,
         email: user.email,
-        photo: user.photoUrl,
+        photo: user.photoURL,
       })
     );
   };
@@ -48,7 +48,17 @@ const Header = ({ toggle }) => {
           </Logo>
         </NavLink>
 
-        {!username ? <Login onClick={handleAuth}>Login</Login> : <></>}
+        {!username ? (
+          <Login onClick={handleAuth}>Login</Login>
+        ) : (
+          <>
+            <NavMenu>
+              <a href="/home">
+                <img src="/images/home-icon.svg" alt="" />
+              </a>
+            </NavMenu>
+          </>
+        )}
 
         <MobileIcon onClick={toggle}>
           <FaBars />
